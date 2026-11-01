@@ -18,6 +18,17 @@ This is a portfolio demo. It runs on a synthetic base of 73 feedback items about
 
 - Run R1 is **simulated**: authored to contain realistic failure modes so the review workflow has something real to catch. It is labeled as simulated in the UI wherever it appears.
 - `experiments/r2/` documents a real experiment: 4 attempts to run theme synthesis with small local instruct models (Qwen2.5 0.5B/1.5B GGUF via node-llama-cpp). These 4 attempts, with these models, prompts and resources, did not produce valid structured output. Raw completions and per-attempt parameters are included unmodified.
+- Real runs (R3+) only exist when a provider key is configured server-side. On static builds the "Run new synthesis" button explains it cannot run instead of faking a result. A failed provider call adds nothing to the queue.
+
+## Real synthesis (R3+)
+
+`api/synthesize.ts` is a Vercel serverless endpoint that runs the same synthesis live. It is deliberately narrow:
+
+- Accepts no user text; the request triggers a run over the fixed synthetic dataset only (the gold answer key is never sent to the model).
+- The provider key lives in server-side env vars (`AI_PROVIDER` = `gemini` or `openai`, plus `GEMINI_API_KEY` or `OPENAI_API_KEY`; optional `AI_MODEL_*` overrides, optional `RUN_TOKEN` to lock the endpoint).
+- Output is schema-validated before it enters the queue: themes with no valid citation are dropped, unknown feedback ids are dropped, and malformed or truncated output aborts the run with an error instead of being repaired by hand.
+- Abuse limits: output-token cap, a best-effort per-IP rate limit, and the provider-side budget/free tier as the hard cap. Designed for a free tier with no billing attached, so abuse can exhaust quota but never spend money.
+- Every run enters the queue labeled `Real run R3 · <model>` with full provenance (provider, model, parameters, timestamp, token usage) and is measured against the same answer key on the Evaluation page, with the gold mapping auto-computed from citation overlap (R1's mapping was hand-authored).
 
 ## Run it
 
@@ -31,9 +42,9 @@ End-to-end interaction tests (headless Chrome via puppeteer-core, system Chrome 
 
 ```bash
 npm run serve &
-npm test        # 21 checks: queue actions, evidence, filters, persistence, mobile viewport
+npm test        # 27 checks: queue actions, evidence, filters, persistence, real-run failure handling, mobile viewport
 ```
 
 ## Stack
 
-React 19 + TypeScript, react-router (hash routing), esbuild. No backend, no accounts, no tracking; review state lives in localStorage.
+React 19 + TypeScript, react-router (hash routing), esbuild. One optional serverless endpoint for live synthesis (`api/`); no accounts, no tracking; review state lives in localStorage.
