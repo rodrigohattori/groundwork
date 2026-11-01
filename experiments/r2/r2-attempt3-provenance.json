@@ -1,0 +1,37 @@
+{
+  "runId": "R2",
+  "attempt": 3,
+  "kind": "real local-model execution (not simulated)",
+  "generatedAt": "2026-11-01T14:50:00Z",
+  "engine": {
+    "runtime": "node-llama-cpp",
+    "llamaBackend": "prebuilt npm binary"
+  },
+  "model": {
+    "file": "model.gguf",
+    "source": "https://huggingface.co/bartowski/Qwen2.5-1.5B-Instruct-GGUF",
+    "sha256": "1adf0b11065d8ad2e8123ea110d1ec956dab4ab038eab665614adba04b6c3370",
+    "quantization": "Q4_K_M"
+  },
+  "prompt": {
+    "sha256": "c6e4d01028025feb8db2a017f8c87809149cebe8c37ea01f456229679b9e859f",
+    "file": "r2-attempt3-prompt.txt"
+  },
+  "params": {
+    "temperature": 0.2,
+    "seed": 1234,
+    "maxTokens": 600,
+    "contextSize": 8192
+  },
+  "timing": {
+    "totalMs": 112000,
+    "note": "generation stopped at the 112 s execution time budget; partial output preserved"
+  },
+  "output": {
+    "themeCount": 0,
+    "parseError": "invalid JSON (unquoted ids, wrong schema: theme/items) and output truncated at the execution time budget",
+    "rawBytes": 971
+  },
+  "notes": "The 1.5B model followed the array shape but ignored the requested schema (theme/items with bare FB-xxx tokens instead of quoted citation strings), and at ~2.3 tokens/s on the available hardware it could not complete a run within the 112 s execution time budget.",
+  "rawCompletionFile": "r2-attempt3-raw-completion.txt"
+}
