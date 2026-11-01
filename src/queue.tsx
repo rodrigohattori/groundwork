@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { aiThemes, type AITheme } from './data';
-import { useGW } from './state';
+import { type AITheme } from './data';
+import { useGW, listAllThemes, type ListedTheme } from './state';
+import { requestRealRun, type RunError } from './realrun';
 import { Citation, Pill } from './components';
 import { Button, TextInput, Callout, ChoiceChips } from './ui';
 
-function ThemeCard({ theme, provenance }: { theme: AITheme; provenance: 'ai' | 'human' }) {
+function ThemeCard({ theme, runLabel, mergeOptions }: { theme: AITheme; runLabel: string; mergeOptions: AITheme[] }) {
     const { state, mutate, reviewFor, log } = useGW();
     const review = reviewFor(theme.id);
     const [mode, setMode] = useState<'none' | 'reject' | 'edit' | 'merge'>('none');
@@ -45,13 +46,13 @@ function ThemeCard({ theme, provenance }: { theme: AITheme; provenance: 'ai' | '
         });
     };
 
-    const others = aiThemes.filter((t) => t.id !== theme.id && reviewFor(t.id).status === 'pending');
+    const others = mergeOptions.filter((t) => t.id !== theme.id);
     const toggle = (m: 'reject' | 'edit' | 'merge') => setMode(mode === m ? 'none' : m);
 
     return <div className="theme">
         <div className="theme-head">
             <h3>{review.title ?? theme.title}</h3>
-            <Pill tone={provenance === 'ai' ? 'muted' : 'ok'}>{provenance === 'ai' ? 'Simulated run R1' : 'Added by reviewer'}</Pill>
+            <Pill tone={runLabel.startsWith('Real run') ? 'ok' : runLabel.startsWith('Simulated') ? 'muted' : 'ok'}>{runLabel}</Pill>
         </div>
         <p className="theme-summary">{review.summary ?? theme.summary}</p>
         <div className="gw-suggestion">
@@ -91,27 +92,60 @@ function ThemeCard({ theme, provenance }: { theme: AITheme; provenance: 'ai' | '
     </div>;
 }
 
+function RunButton({ pendingThemes }: { pendingThemes: ListedTheme[] }) {
+    const { state, mutate, log } = useGW();
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState<RunError | null>(null);
+
+    const run = async () => {
+        setBusy(true);
+        setError(null);
+        const runId = `R${3 + state.realRuns.length}`;
+        try {
+            const realRun = await requestRealRun(runId);
+            mutate((s) => log({
+                kind: 'run',
+                target: runId,
+                action: `ran real synthesis (${realRun.provider} ${realRun.model})`,
+                reason: `${realRun.themes.length} themes entered the queue as unreviewed proposals; validation dropped ${realRun.validation.droppedThemes} theme(s) and ${realRun.validation.droppedCitations} invalid citation(s).`,
+            }, { ...s, realRuns: [...s.realRuns, realRun] }));
+        } catch (e) {
+            setError(e as RunError);
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    return <>
+        <div className="gw-run-row">
+            <Button variant="secondary" compact onClick={run} disabled={busy}>
+                {busy ? `Running real synthesis (up to ~1 min)…` : 'Run new synthesis (real AI)'}
+            </Button>
+            {state.realRuns.length > 0 && <span className="gw-note">{state.realRuns.length} real run(s) on this device: {state.realRuns.map((r) => r.id).join(', ')}</span>}
+        </div>
+        {error && <Callout title="Real synthesis did not run" tone="warning">{error.message} Nothing was added or changed. Run R1 above stays the simulated reference output (see About).</Callout>}
+        {pendingThemes.length === 0 && state.realRuns.length > 0 && null}
+    </>;
+}
+
 export function Queue() {
-    const { state, saved, reviewFor } = useGW();
+    const { state, saved } = useGW();
     const [filter, setFilter] = useState<'pending' | 'reviewed' | 'all'>('pending');
-    const allThemes: { theme: AITheme; provenance: 'ai' | 'human' }[] = [
-        ...aiThemes.map((t) => ({ theme: t, provenance: 'ai' as const })),
-        ...state.customThemes.map((t) => ({
-            theme: { ...t, goldMatch: null, suggestion: { impact: 'medium', effort: 'medium', rationale: 'Added by the reviewer from uncited feedback; no AI suggestion.' } },
-            provenance: 'human' as const,
-        })),
-    ];
+    const allThemes = listAllThemes(state);
     const isPending = (id: string) => (state.reviews[id]?.status ?? 'pending') === 'pending';
-    const pendingCount = allThemes.filter((t) => isPending(t.theme.id)).length;
+    const pendingThemes = allThemes.filter((t) => isPending(t.theme.id));
+    const pendingCount = pendingThemes.length;
     const approvedCount = allThemes.filter((t) => state.reviews[t.theme.id]?.status === 'approved').length;
     const rejectedCount = allThemes.filter((t) => state.reviews[t.theme.id]?.status === 'rejected').length;
     const visible = allThemes.filter((t) => filter === 'all' || (filter === 'pending' ? isPending(t.theme.id) : !isPending(t.theme.id)));
+    const mergeOptions = pendingThemes.map((t) => t.theme);
 
     return <>
         <div className="page-head">
             <h1>Review queue</h1>
-            <p className="page-sub">Synthesis run R1 (simulated — see About) proposed these themes. Nothing becomes a signal until you approve it. Open the evidence, check each quote, then approve, edit, merge or reject with a reason.</p>
+            <p className="page-sub">Synthesis run R1 (simulated, see About) proposed these themes. Nothing becomes a signal until you approve it. Open the evidence, check each quote, then approve, edit, merge or reject with a reason.</p>
         </div>
+        <RunButton pendingThemes={pendingThemes} />
         <div className="queue-toolbar">
             <ChoiceChips value={filter} onChange={(v) => setFilter(v as typeof filter)} options={[
                 { value: 'pending', label: `Pending · ${pendingCount}` },
@@ -120,8 +154,8 @@ export function Queue() {
             ]} />
             <span className="queue-stats">{approvedCount} approved · {rejectedCount} rejected · {state.decisions.length} decisions logged</span>
         </div>
-        {pendingCount === 0 && filter === 'pending' && <Callout title="Queue clear">All AI themes reviewed. Missed signals can be added from the Evaluation page.</Callout>}
-        {visible.map(({ theme, provenance }) => <ThemeCard key={theme.id} theme={theme} provenance={provenance} />)}
+        {pendingCount === 0 && filter === 'pending' && <Callout title="Queue clear">All AI themes reviewed. Missed signals can be added from the Evaluation page, or run a real synthesis above.</Callout>}
+        {visible.map(({ theme, runLabel }) => <ThemeCard key={theme.id} theme={theme} runLabel={runLabel} mergeOptions={mergeOptions} />)}
         <p className="saved-note">{saved.message}</p>
     </>;
 }
