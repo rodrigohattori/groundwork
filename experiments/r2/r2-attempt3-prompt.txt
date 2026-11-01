@@ -1,0 +1,78 @@
+<|system|>
+You are a JSON-only feedback-synthesis engine. Your entire reply MUST be one JSON array. The first character of your reply must be [. No markdown, no code fences, no explanation, no headings, no text before or after the array. Each element: {"id":"t-<slug>","title":"short theme title","summary":"one sentence","citations":["FB-001"],"impact":"high|medium|low","effort":"high|medium|low","rationale":"under 15 words"}. Every theme MUST cite the exact feedback ids that support it. Never cite an id that does not support the theme. Merge duplicates. Do not invent feedback. Produce 5 to 6 themes. Be terse. Output compact single-line JSON with no indentation. Stop immediately after the closing ].
+<|user|>
+Here are 73 customer feedback items about a Brazilian insurance product (MAG +Cuidado: hospital-income insurance, serious-illness and surgery coverage, telemedicine assistance, monthly Pix credit for generic medication, accredited-network discounts). Group them into themes. Reply with the JSON array only.
+
+FB-001 | ticket | Marcos V. | 2026-10-02 | Faz 6 dias que pedi o crédito do remédio e até agora nada do Pix. O remédio é de uso contínuo, não dá pra esperar.
+FB-002 | whatsapp | Dona Célia | 2026-10-05 | bom dia, o pix dos remédios não caiu esse mês. mês passado veio dia 5
+FB-003 | review | J. Almeida | 2026-10-08 | Propaganda diz crédito pra remédio todo mês mas o meu demorou 9 dias. Quase fiquei sem o genérico do diabetes.
+FB-004 | ticket | Patrícia R. | 2026-10-11 | Solicitei o crédito Pix dia 3, hoje é dia 11 e nada. A atendente disse que o prazo é de 5 dias úteis, mas ninguém avisa isso na hora da venda.
+FB-005 | social | Rogério T. | 2026-10-14 | alguém mais com o pix do remédio atrasado? o meu veio certinho nos 2 primeiros meses e agora nada
+FB-006 | whatsapp | Seu Antônio | 2026-10-18 | o dinheiro do remédio caiu ontem, demorou mas veio. deviam avisar o prazo direitinho
+FB-007 | ticket | Luciana M. | 2026-10-21 | Pix do medicamento não caiu. Segunda vez. Preciso de previsibilidade, o remédio é de uso contínuo.
+FB-008 | social | Karina S. | 2026-10-24 | o crédito de remédio deles é no pix mesmo, gostei. mas o meu atrasou uma semana
+FB-009 | whatsapp | Ivone P. | 2026-10-28 | pedi o credito segunda e hoje sexta nada. antes era mais rapido
+FB-010 | whatsapp | Ivone P. | 2026-10-28 | ainda sobre o credito do remédio: continua sem cair
+FB-011 | whatsapp | Douglas F. | 2026-09-30 | o crédito de 50 reais acumula se eu não usar no mês?
+FB-012 | ticket | Renata C. | 2026-10-04 | Posso usar o crédito do Pix em qualquer farmácia ou só na rede credenciada? E serve pra qualquer remédio ou só genérico?
+FB-013 | social | Tiago M. | 2026-10-09 | fiquei na dúvida: o crédito de remédio é por pessoa ou por contrato? minha esposa é dependente
+FB-014 | whatsapp | Maria José | 2026-10-16 | o valor do credito muda se eu mudar de plano? to no essencial pensando no premium
+FB-015 | ticket | Eduardo L. | 2026-10-20 | O crédito Pix pode ser usado para vitamina e suplemento ou só medicamento com receita?
+FB-016 | review | C. Nogueira | 2026-10-26 | Não ficou claro se o crédito vira saldo livre ou precisa mandar a receita antes. Mandei receita e caiu.
+FB-017 | ticket | Sandra P. | 2026-09-29 | Cheguei na clínica credenciada aqui em Sorocaba e falaram que não conheciam o desconto do +Cuidado. Paguei cheio.
+FB-018 | review | Wellington | 2026-10-02 | rede credenciada fraca no interior, o laboratório mais perto que aceita fica a 40km
+FB-019 | whatsapp | Neide A. | 2026-10-06 | fiz exame com desconto numa rede grande em Campinas, deu tudo certo e saiu bem mais barato
+FB-020 | ticket | Rafael D. | 2026-10-09 | Como faço pra achar os laboratórios credenciados? No app não achei a lista.
+FB-021 | social | Creusa | 2026-10-13 | a clínica aqui do bairro falou que parou de dar desconto pra esses cartão, fiquei sem entender
+FB-022 | ticket | Márcio H. | 2026-10-18 | Desconto de consulta não foi aplicado no agendamento online da clínica, tive que pagar valor cheio e pedir estorno.
+FB-023 | whatsapp | Tereza | 2026-10-22 | quanto é o desconto mais ou menos nas consultas? varia por lugar?
+FB-024 | review | Ana Beatriz | 2026-10-29 | uso bastante os descontos em exame, pena que nem toda cidade tem credenciado
+FB-025 | review | Fernanda L. | 2026-09-28 | Meu filho passou mal 2h da manhã e o pediatra online atendeu em minutos. Só por isso já vale.
+FB-026 | whatsapp | Carlos E. | 2026-10-01 | o médico online me atendeu rápido e resolveu, evitei pronto socorro
+FB-027 | ticket | Robson A. | 2026-10-05 | Fiquei 40 minutos na fila do atendimento online de madrugada. Achei que 24h era na hora.
+FB-028 | social | Simone | 2026-10-08 | telemedicina deles é boa demais, médico atencioso, receita digital na hora
+FB-029 | whatsapp | Davi | 2026-10-12 | o atendimento online nao tem ginecologista de madrugada? precisei e só tinha clínico
+FB-030 | review | Paulo S. | 2026-10-15 | Usei a telemedicina com especialista, consegui cardiologista em 3 dias. No SUS seria mês.
+FB-031 | ticket | Vânia | 2026-10-19 | A chamada de vídeo travou duas vezes e tive que recomeçar a consulta. O médico era bom.
+FB-032 | whatsapp | Seu Rubens | 2026-10-23 | me ajudaram no whatsapp a entrar na consulta, tenho 67 anos e consegui
+FB-033 | social | Amanda K. | 2026-10-26 | o clínico 24h me poupou uma noite no pronto socorro com a minha filha
+FB-034 | ticket | João V. | 2026-10-30 | Médico da teleconsulta não podia renovar minha receita de uso contínuo. Fiquei sem entender o porquê.
+FB-035 | ticket | Bruno T. | 2026-10-03 | A empresa não aceitou o atestado da teleconsulta. Disseram que só vale presencial. Perdi o dia.
+FB-036 | whatsapp | Michele | 2026-10-17 | o medico online nao quis dar atestado, disse que sem exame presencial nao podia. mas o site fala que emite atestado
+FB-037 | review | R. Castro | 2026-10-27 | Atestado veio sem CID e o RH recusou. Tive que pedir de novo pelo WhatsApp.
+FB-038 | ticket | Helena B. | 2026-10-06 | Meu marido ficou 5 dias internado. Como aciono a diária de internação? Ninguém explicou no hospital.
+FB-039 | call | Call center note | 2026-10-08 | Cliente perguntou se diária cobre UTI e se o valor é o mesmo. Encaminhado para condições gerais.
+FB-040 | ticket | Osvaldo | 2026-10-10 | Internação aprovada pelo convênio público, fiquei 12 dias. O pedido da diária foi negado por carência de 90 dias. Ninguém falou de carência na venda.
+FB-041 | whatsapp | Sueli | 2026-10-14 | recebi a diária certinho depois de 9 dias internada, o dinheiro ajudou muito. o processo de documentos foi confuso
+FB-042 | ticket | Anderson P. | 2026-10-19 | Qual documento preciso pra pedir a diária? Mandei alta hospitalar e pediram mais coisa.
+FB-043 | social | Marlene | 2026-10-25 | alguém sabe se a diária de internação vale pra acompanhante? minha filha internou e eu fiquei com ela
+FB-044 | review | G. Freitas | 2026-10-31 | Diária demorou 22 dias pra pagar depois do pedido. Ajuda financeira que chega tarde ajuda menos.
+FB-045 | ticket | Marlene D. | 2026-10-16 | Minha cirurgia de vesícula foi negada dizendo que era condição pré-existente. Fiz 4 meses de carência direitinho, paguei tudo em dia. Vou procurar meus direitos. É um absurdo.
+FB-046 | ticket | José Carlos | 2026-10-27 | Negaram a cobertura de cirurgia do meu plano Premium dizendo exclusão. Contrato diz até R$10.000. Quero revisão urgente, a cirurgia é semana que vem.
+FB-047 | social | Fábio | 2026-10-01 | achei que era plano de saúde quando contratei, agora vi que é seguro de vida com assistências. deviam deixar mais claro
+FB-048 | ticket | Cintia R. | 2026-10-07 | O vendedor disse que cobria qualquer internação. Lendo o contrato vi que é diária limitada. Me senti enganada.
+FB-049 | review | Marcelo Q. | 2026-10-11 | Não é plano de saúde, é um seguro com benefícios. Sabendo disso antes, o produto é bom. O problema é a expectativa.
+FB-050 | whatsapp | Valdir | 2026-10-15 | isso substitui plano de saúde ou complementa?
+FB-051 | ticket | Sílvia N. | 2026-10-21 | Por 59,90 achei que teria consulta grátis. O desconto ajuda mas não é grátis. Ajustar a comunicação.
+FB-052 | social | Kléber | 2026-10-28 | minha mãe jurou que tinha "plano da MAG", expliquei que é outra coisa
+FB-053 | whatsapp | Tatiane | 2026-09-30 | o robozinho do whatsapp fica em loop e não me passa pra atendente
+FB-054 | ticket | Vitor H. | 2026-10-05 | Pedi segunda via do boleto pelo WhatsApp e o bot resolveu em 2 minutos. Bom.
+FB-055 | whatsapp | Dona Rosa | 2026-10-09 | nao sei mexer nesses negocio, queria falar com gente. depois de muito tentar me atenderam
+FB-056 | social | Érica | 2026-10-13 | atendimento pelo whatsapp é prático mas o menu do bot é confuso
+FB-057 | review | N. Batista | 2026-10-18 | o canal oficial é WhatsApp, o que facilita. mas fora do horário o bot não avisa que só vai responder depois
+FB-058 | whatsapp | Cícero | 2026-10-24 | demorou 3h pra um humano assumir a conversa no whatsapp
+FB-059 | call | Call center note | 2026-10-29 | Cliente relatou que não conseguiu acionar telemedicina pelo WhatsApp porque o bot não entendeu o pedido. Orientado.
+FB-060 | ticket | Priscila | 2026-10-02 | Cancelei dia 20 e veio cobrança no cartão dia 28. Quero estorno.
+FB-061 | whatsapp | Marcela | 2026-10-10 | como faço pra cancelar? não acho a opção
+FB-062 | review | O. Lima | 2026-10-16 | Cancelamento fácil mesmo como prometem, sem ficar te segurando. Estorno em 5 dias.
+FB-063 | ticket | Fernando A. | 2026-10-23 | Estorno do cancelamento ainda não caiu depois de 15 dias.
+FB-064 | social | Bianca | 2026-10-30 | cancelei porque apertou o orçamento, gostava do produto. voltaria
+FB-065 | social | Zeca | 2026-10-04 | esse sorteio semanal é verdade? nunca vi ninguém postar que ganhou
+FB-066 | whatsapp | Lourdes | 2026-10-12 | onde sai o resultado do sorteio?
+FB-067 | social | Betão | 2026-10-19 | 30 mil por semana? cheiro de pegadinha. se for real, mostrem os ganhadores
+FB-068 | ticket | Antônia | 2026-10-26 | Meu número da sorte veio no email mas não sei onde acompanhar. Podiam mandar o resultado no WhatsApp.
+FB-069 | review | Camila V. | 2026-10-03 | A teleconsulta veterinária salvou meu gato num domingo. Nem lembrava que tinha isso no plano.
+FB-070 | whatsapp | Jéssica | 2026-10-08 | a nutricionista online montou meu plano alimentar, muito atenciosa
+FB-071 | social | Roberta | 2026-10-14 | fiz o check-up anual incluso, descobri colesterol alto cedo. obrigada!
+FB-072 | whatsapp | Jéssica | 2026-10-09 | só reforçando: adorei a nutricionista
+FB-073 | review | T. Moraes | 2026-10-22 | o treinador online é básico mas ajuda a manter rotina. psicólogo ainda não usei.
