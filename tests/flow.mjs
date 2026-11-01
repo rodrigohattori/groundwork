@@ -23,6 +23,12 @@ await sleep(400);
 
 check('opens on review queue', (await text(page, '.page-head h1')) === 'Review queue');
 check('10 pending theme cards', (await count(page, '.theme:not(.is-done)')) === 10);
+check('run-synthesis button present', /Run new synthesis/.test((await text(page, '.gw-run-row')) ?? ''));
+
+// static build: real run must fail loudly, not fake
+await page.click('.gw-run-row .btn'); await sleep(1200);
+check('static build shows unavailable notice, no fake run', /did not run|static|endpoint/i.test((await text(page, '.gw-callout, [class*=callout]')) ?? (await page.evaluate(() => document.body.innerText))));
+check('still 10 pending after failed run', (await count(page, '.theme:not(.is-done)')) === 10);
 
 // evidence toggle
 await page.click('.theme:not(.is-done) .evidence-toggle'); await sleep(250);
@@ -94,6 +100,16 @@ await page.click('.theme:not(.is-done) .evidence-toggle'); await sleep(250);
 check('mobile: evidence expands', (await count(page, '.theme:not(.is-done) .gw-citation')) > 0);
 await page.$eval('.theme:not(.is-done) .theme-actions .btn.v-primary', (e) => e.click()); await sleep(400);
 check('mobile: approve updates stats', /1 approved/.test((await text(page, '.queue-stats')) ?? ''));
+await page.close();
+
+// about page: R2 + R3 sections
+page = await browser.newPage();
+await page.setViewport({ width: 1280, height: 900 });
+await page.goto(BASE + '/#/about', { waitUntil: 'networkidle0' }); await sleep(400);
+const aboutText = (await page.evaluate(() => document.body.innerText)) ?? '';
+check('about mentions R2 experiment', /R2: a real, failed model experiment/i.test(aboutText));
+check('about mentions R3 live synthesis', /R3\+: live synthesis, on demand/i.test(aboutText));
+check('about discloses provider data-use choice', /synthetic/.test(aboutText) && /provider/.test(aboutText));
 await page.close();
 
 await browser.close();
