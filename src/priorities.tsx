@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { aiThemes } from './data';
-import { useGW } from './state';
+import { useGW, listAllThemes } from './state';
 import { Pill } from './components';
 import { Button, TextInput, Callout } from './ui';
 
 export function Priorities() {
     const { state, mutate, reviewFor, log } = useGW();
     const [reasons, setReasons] = useState<Record<string, string>>({});
-    const approved = [...aiThemes.map((t) => ({ ...t, provenance: 'Simulated run R1' })), ...state.customThemes.map((t) => ({ ...t, goldMatch: null, provenance: 'Added by reviewer', suggestion: { impact: 'medium' as const, effort: 'medium' as const, rationale: 'Added by the reviewer from uncited feedback; no AI suggestion.' } }))]
+    const approved = listAllThemes(state)
+        .map((t) => ({ ...t.theme, provenance: t.runLabel }))
         .filter((t) => reviewFor(t.id).status === 'approved');
 
     const decided = new Set(state.decisions.filter((d) => d.kind === 'priority').map((d) => d.target));
@@ -46,4 +46,4 @@ export function Priorities() {
                 </>}
         </div>)}
     </>;
-        }
+}
