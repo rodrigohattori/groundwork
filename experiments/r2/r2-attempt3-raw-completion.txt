@@ -1,0 +1,52 @@
+```json
+[
+    {
+        "theme": "Credit Issues",
+        "items": [
+            FB-001,
+            FB-003,
+            FB-007,
+            FB-009,
+            FB-011,
+            FB-013,
+            FB-017,
+            FB-021,
+            FB-027,
+            FB-031
+        ]
+    },
+    {
+        "theme": "Delivery and Payment Issues",
+        "items": [
+            FB-002,
+            FB-004,
+            FB-005,
+            FB-006,
+            FB-010,
+            FB-012,
+            FB-014,
+            FB-015,
+            FB-016
+        ]
+    },
+    {
+        "theme": "Network and Coverage Issues",
+        "items": [
+            FB-018,
+            FB-022,
+            FB-023,
+            FB-024,
+            FB-025,
+            FB-026,
+            FB-028,
+            FB-029,
+            FB-030,
+            FB-032
+        ]
+    },
+    {
+        "theme": "Customer Service and Support",
+        "items": [
+            FB-008,
+            FB-019,
+            FB
