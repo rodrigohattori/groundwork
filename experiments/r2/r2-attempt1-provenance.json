@@ -1,0 +1,38 @@
+{
+  "runId": "R2",
+  "kind": "real local-model execution (not simulated)",
+  "generatedAt": "2026-11-01T14:36:37.416Z",
+  "engine": {
+    "runtime": "node-llama-cpp",
+    "llamaBackend": "prebuilt npm binary"
+  },
+  "model": {
+    "file": "model-05b.gguf",
+    "source": "https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF",
+    "sha256": "6eb923e7d26e9cea28811e1a8e852009b21242fb157b26149d3b188f3a8c8653",
+    "quantization": "Q4_K_M"
+  },
+  "prompt": {
+    "sha256": "0d6cef2e0072fb378bc8b4fbaa84ca19a86777a8ec249a9dd51da6758f27f880",
+    "file": "r2-attempt1-prompt.txt"
+  },
+  "params": {
+    "temperature": 0.2,
+    "seed": 1234,
+    "maxTokens": 3072,
+    "contextSize": 8192
+  },
+  "timing": {
+    "modelLoadMs": 1681,
+    "inferenceMs": 99308,
+    "totalMs": 100989
+  },
+  "output": {
+    "themeCount": 0,
+    "parseError": "Unexpected end of JSON input",
+    "uncitedThemes": 0
+  },
+  "attempt": 1,
+  "notes": "Format failure: model ignored the JSON-only instruction and produced markdown prose. Raw output preserved unmodified in r2-attempt1-raw-completion.txt. Source URL corrected from the 1.5B page to the 0.5B page (sha256 identifies the actual file).",
+  "rawCompletionFile": "r2-attempt1-raw-completion.txt"
+}
