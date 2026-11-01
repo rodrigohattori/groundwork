@@ -1,0 +1,21 @@
+{
+  "name": "groundwork",
+  "private": false,
+  "version": "0.1.0",
+  "description": "Feedback intelligence demo: a review-first queue over synthetic customer feedback, with evidence, human decisions and an auditable log.",
+  "scripts": {
+    "build": "esbuild src/main.tsx --bundle --minify --outfile=dist/assets/bundle.js",
+    "serve": "python3 -m http.server 8904 --directory dist",
+    "test": "node tests/flow.mjs"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "puppeteer-core": "^25.16.0",
+    "typescript": "^5.6.0"
+  }
+}
