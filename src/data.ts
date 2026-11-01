@@ -238,12 +238,32 @@ export interface EvalResult {
   misplaced: { themeId: string; itemId: string }[];
 }
 
-export function evaluate(): EvalResult {
+export interface EvalThemeInput {
+  id: string;
+  citations: string[];
+  goldMatch: string | null;
+}
+
+// Real runs have no hand-authored gold mapping; map each theme to the gold
+// theme that the plurality of its citations belongs to, else null.
+export function autoGoldMatch(themes: { id: string; citations: string[] }[]): EvalThemeInput[] {
+  return themes.map((t) => {
+    const counts = new Map<string, number>();
+    for (const c of t.citations) for (const g of feedbackById.get(c)?.gold ?? []) counts.set(g, (counts.get(g) ?? 0) + 1);
+    let best: string | null = null;
+    let bestN = 0;
+    for (const [g, n] of counts) if (n > bestN) { best = g; bestN = n; }
+    const needed = Math.max(2, Math.ceil(t.citations.length / 2));
+    return { id: t.id, citations: t.citations, goldMatch: bestN >= needed ? best : null };
+  });
+}
+
+export function evaluate(themes: EvalThemeInput[] = aiThemes): EvalResult {
   const itemById = new Map(feedback.map((f) => [f.id, f]));
   const cited = new Set<string>();
   const misplaced: { themeId: string; itemId: string }[] = [];
   const byGold = new Map<string, string[]>();
-  for (const t of aiThemes) {
+  for (const t of themes) {
     for (const c of t.citations) {
       cited.add(c);
       if (t.goldMatch) {
@@ -255,7 +275,7 @@ export function evaluate(): EvalResult {
   }
   const duplicatePairs: [string, string][] = [];
   for (const ids of byGold.values()) if (ids.length > 1) duplicatePairs.push([ids[0], ids[1]]);
-  const invented = aiThemes.filter((t) => !t.goldMatch).map((t) => t.id);
+  const invented = themes.filter((t) => !t.goldMatch).map((t) => t.id);
   const actionable = goldThemes.filter((g) => g.kind === 'actionable');
   const covered = new Set([...byGold.keys()]);
   const missedActionable = actionable
@@ -267,14 +287,14 @@ export function evaluate(): EvalResult {
   return {
     itemsTotal: feedback.length,
     itemsCited: cited.size,
-    themesProposed: aiThemes.length,
+    themesProposed: themes.length,
     goldActionable: actionable.length,
     goldCovered: actionable.filter((g) => covered.has(g.id)).length,
     duplicatePairs,
     invented,
     missedActionable,
     missedInformational,
-    citationsTotal: aiThemes.reduce((n, t) => n + t.citations.length, 0),
+    citationsTotal: themes.reduce((n, t) => n + t.citations.length, 0),
     misplaced,
   };
 }
