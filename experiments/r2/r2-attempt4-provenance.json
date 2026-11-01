@@ -1,0 +1,37 @@
+{
+  "runId": "R2",
+  "attempt": 4,
+  "kind": "real local-model execution (not simulated)",
+  "generatedAt": "2026-11-01T14:52:15Z",
+  "engine": {
+    "runtime": "node-llama-cpp",
+    "llamaBackend": "prebuilt npm binary"
+  },
+  "model": {
+    "file": "model-05b.gguf",
+    "source": "https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF",
+    "sha256": "6eb923e7d26e9cea28811e1a8e852009b21242fb157b26149d3b188f3a8c8653",
+    "quantization": "Q4_K_M"
+  },
+  "prompt": {
+    "sha256": "ecf127044a3e50a70857e3aecb297d590276d65098d86db346b28b54e0ccf2f2",
+    "file": "r2-attempt4-prompt.txt"
+  },
+  "params": {
+    "temperature": 0.2,
+    "seed": 1234,
+    "maxTokens": 900,
+    "contextSize": 8192
+  },
+  "timing": {
+    "totalMs": 112000,
+    "note": "generation stopped at the 112 s execution time budget; partial output preserved"
+  },
+  "output": {
+    "themeCount": 0,
+    "parseError": "no JSON array of themes found; model echoed the feedback index as an object, ignoring the few-shot format example",
+    "rawBytes": 2127
+  },
+  "notes": "Same task-comprehension failure as attempt 2 despite the few-shot format example: the 0.5B model echoed the feedback index instead of synthesizing themes.",
+  "rawCompletionFile": "r2-attempt4-raw-completion.txt"
+}
