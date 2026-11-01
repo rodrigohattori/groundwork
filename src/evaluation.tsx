@@ -1,5 +1,5 @@
 import React from 'react';
-import { aiThemes, evaluate, goldThemes } from './data';
+import { aiThemes, autoGoldMatch, evaluate, goldThemes } from './data';
 import { useGW } from './state';
 import { FeedbackCard, Pill } from './components';
 import { Button, Callout, Section } from './ui';
@@ -55,6 +55,21 @@ export function Evaluation() {
                 </div>;
             })}
         </Section>
+        {state.realRuns.map((r) => {
+            const mapped = autoGoldMatch(r.themes);
+            const rev = evaluate(mapped);
+            return <Section key={r.id} title={`Run ${r.id} (real) vs the answer key`}>
+                <p className="page-sub">Real run on {new Date(r.ranAt).toLocaleString('pt-BR')} · provider {r.provider} · model {r.model} · prompt {r.promptVersion}. Gold mapping auto-computed from citation overlap (R1's mapping above was hand-authored); validation dropped {r.validation.droppedThemes} theme(s) and {r.validation.droppedCitations} invalid citation(s) before the run entered the queue.</p>
+                <div className="gw-eval-grid">
+                    <div className="gw-eval-cell"><span className="gw-eval-num">{rev.themesProposed}</span><span>themes proposed</span></div>
+                    <div className="gw-eval-cell"><span className="gw-eval-num">{rev.goldCovered} of {rev.goldActionable}</span><span>actionable gold themes found</span></div>
+                    <div className="gw-eval-cell"><span className="gw-eval-num">{rev.invented.length}</span><span>invented themes</span></div>
+                    <div className="gw-eval-cell"><span className="gw-eval-num">{rev.duplicatePairs.length}</span><span>duplicated pairs</span></div>
+                    <div className="gw-eval-cell"><span className="gw-eval-num">{rev.misplaced.length} of {rev.citationsTotal}</span><span>misplaced quotes</span></div>
+                    <div className="gw-eval-cell"><span className="gw-eval-num">{rev.missedActionable.length}</span><span>missed actionable signals</span></div>
+                </div>
+            </Section>;
+        })}
         <Section title="Known flaws left in on purpose">
             <ul className="gw-list">
                 <li><strong>t-app-crash</strong> ("App instability on Android") is invented: one quote about a dropped video call inside a telemedicine consult, inflated into a stability theme. Reject it in the queue and the rejection is logged.</li>
@@ -63,4 +78,4 @@ export function Evaluation() {
             </ul>
         </Section>
     </>;
-}
+                    }
