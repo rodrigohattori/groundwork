@@ -11,7 +11,10 @@ import { feedback } from '../src/data';
 const PROMPT_VERSION = 'synth-v1';
 const MAX_OUTPUT_TOKENS = 8192;
 const RATE_LIMIT_PER_HOUR = 10;
+const GLOBAL_DAILY_CAP = 30; // defense in depth: even across IPs, a warm instance stops early
 const hits = new Map<string, number[]>(); // best-effort per warm instance
+let globalDay = new Date().toISOString().slice(0, 10);
+let globalCount = 0;
 
 const SCHEMA = {
   type: 'object',
@@ -148,6 +151,11 @@ export default async function handler(req: any, res: any) {
   if (process.env.RUN_TOKEN && req.headers?.['x-gw-run-token'] !== process.env.RUN_TOKEN) {
     res.status(401).json({ error: 'run-token-required' }); return;
   }
+
+  const today = new Date().toISOString().slice(0, 10);
+  if (today !== globalDay) { globalDay = today; globalCount = 0; }
+  if (globalCount >= GLOBAL_DAILY_CAP) { res.status(429).json({ error: 'daily-cap', detail: 'Daily synthesis cap reached for this deployment. The provider quota and this cap are the cost controls; try again tomorrow.' }); return; }
+  globalCount++;
 
   const ip = String(req.headers?.['x-forwarded-for'] ?? req.socket?.remoteAddress ?? 'unknown').split(',')[0].trim();
   const now = Date.now();
