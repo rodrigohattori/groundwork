@@ -125,7 +125,7 @@ async function callOpenAI(model: string, key: string): Promise<{ raw: any; usage
       ],
       response_format: { type: 'json_schema', json_schema: { name: 'groundwork_synthesis', schema: SCHEMA, strict: true } },
       max_completion_tokens: MAX_OUTPUT_TOKENS,
-      temperature: 0.2,
+      reasoning_effort: 'low', // Luna is a reasoning model; keep thinking budget small. No temperature param: reasoning models reject it.
     }),
     signal: AbortSignal.timeout(55_000),
   });
@@ -169,7 +169,7 @@ export default async function handler(req: any, res: any) {
         promptVersion: PROMPT_VERSION,
         params: provider === 'gemini'
           ? { temperature: 0.2, maxOutputTokens: MAX_OUTPUT_TOKENS, responseMimeType: 'application/json' }
-          : { temperature: 0.2, max_completion_tokens: MAX_OUTPUT_TOKENS, response_format: 'json_schema strict' },
+          : { reasoning_effort: 'low', max_completion_tokens: MAX_OUTPUT_TOKENS, response_format: 'json_schema strict' },
         ranAt: new Date().toISOString(),
         usage,
         validation: { themes: themes.length, droppedCitations, droppedThemes },
