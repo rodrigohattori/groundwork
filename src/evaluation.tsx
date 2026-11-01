@@ -22,6 +22,7 @@ export function Evaluation() {
         <div className="page-head">
             <h1>Evaluation: run R1 vs the answer key</h1>
             <p className="page-sub">This demo ships with an answer key (the gold standard) built by hand from the synthetic base. Run R1 is simulated: authored to contain the failure modes a real LLM run shows, not recorded from a measured pipeline execution. The numbers below describe this shipped output against the key — they are not benchmark performance of any model.</p>
+            <p className="page-sub">A real local-model experiment (run R2) was also tried against the same base: 4 attempts with small local instruct models, and these 4 attempts, with these models, prompts and resources, did not produce valid structured output. Prompts, raw outputs and parameters: <a href="https://github.com/rodrigohattori/groundwork/tree/main/experiments/r2">experiments/r2</a> in the repository.</p>
         </div>
         <div className="gw-eval-grid">
             <div className="gw-eval-cell"><span className="gw-eval-num">{ev.itemsTotal}</span><span>feedback items</span></div>
