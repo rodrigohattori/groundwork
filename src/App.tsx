@@ -6,8 +6,7 @@ import { FeedbackBase } from './feedbackPage';
 import { Priorities } from './priorities';
 import { Decisions } from './decisions';
 import { Evaluation } from './evaluation';
-import { useGW } from './state';
-import { aiThemes } from './data';
+import { useGW, listAllThemes } from './state';
 import { Callout, Section } from './ui';
 
 function About() {
@@ -36,7 +35,7 @@ function About() {
         <Section title="Architecture">
             <ol className="gw-list">
                 <li>Static web app (React + TypeScript). No backend: the demo is review-workflow-first.</li>
-                <li>Synthesis runs offline behind a provider interface, treating all AI output as untrusted input. The shipped run R1 is simulated — authored to contain realistic failure modes, not a recorded model execution. Swapping in a live LLM is a provider change, not a redesign.</li>
+                <li>Synthesis runs behind a provider interface, treating all AI output as untrusted input. The shipped run R1 is simulated — authored to contain realistic failure modes, not a recorded model execution. Run R2 (below) was a real local-model experiment. Run R3+ is live synthesis on demand, when the deployment has a provider key configured: the key stays server-side, the request carries only the fixed synthetic dataset, the output is schema-validated before it enters the queue, and every run is stored with full provenance (provider, model, parameters, timestamp, token usage).</li>
                 <li>All AI output is treated as untrusted input: themes, citations and priority suggestions are proposals until a person acts on them.</li>
                 <li>Review state and the decision log persist on this device only (local storage). Export the log as JSON from the Decisions page.</li>
                 <li>The gold standard is versioned with the data, so every synthesis run can be measured the same way.</li>
@@ -52,8 +51,11 @@ function About() {
             </ol>
         </Section>
         <Section title="Limits, on purpose">
-            <p className="body-text">No live LLM calls, no accounts, no server, no integrations. Those are next steps, in order: a live synthesis provider behind the existing interface, server-side persistence with auth, then feedback-source connectors.</p>
+            <p className="body-text">No accounts, no integrations, state only on this device. Live synthesis exists as an opt-in action in the queue and runs only where a provider key is configured server-side; on static builds the button explains it cannot run instead of faking one. Sending the base to a provider is a deliberate, disclosed choice: the dataset is 100% synthetic, so provider data-use terms (for example, free tiers that may use prompts to improve products) are acceptable here, and a real customer base would require a provider tier with a no-training guarantee. Next steps, in order: server-side persistence with auth, then feedback-source connectors.</p>
             <p className="body-text">Source: <a href="https://github.com/rodrigohattori/groundwork">github.com/rodrigohattori/groundwork</a>.</p>
+        </Section>
+        <Section title="R3+: live synthesis, on demand">
+            <p className="body-text">Where the deployment has a provider key configured (currently planned: a free-tier or budget-capped small model), the queue offers "Run new synthesis (real AI)". The endpoint is deliberately narrow: it accepts no user text, sends only the fixed synthetic dataset, enforces output-token and rate limits, and rejects anything that fails schema validation — a failed run adds nothing to the queue instead of being repaired by hand. Real runs enter the queue as unreviewed proposals labeled "Real run R3 · model name", and each run is evaluated against the same answer key on the Evaluation page, with its gold mapping auto-computed from citation overlap (R1's mapping was hand-authored).</p>
         </Section>
         <Section title="R2: a real, failed model experiment">
             <p className="body-text">R1 is simulated by design. R2 asked a real question: what would a small local model actually produce from this same 73-item base? Four attempts were run with small local instruct models (Qwen2.5 0.5B and 1.5B, GGUF, via node-llama-cpp): a plain JSON-only prompt, a stricter JSON-forcing prompt, the larger model, and a few-shot format example.</p>
@@ -64,8 +66,7 @@ function About() {
 
 export function App() {
     const { state } = useGW();
-    const pending = aiThemes.filter((t) => (state.reviews[t.id]?.status ?? 'pending') === 'pending').length
-        + state.customThemes.filter((t) => (state.reviews[t.id]?.status ?? 'pending') === 'pending').length;
+    const pending = listAllThemes(state).filter((t) => (state.reviews[t.theme.id]?.status ?? 'pending') === 'pending').length;
     return <div className="app">
         <aside className="app-side">
             <div className="app-brand"><span className="app-mark">G</span><span>Groundwork</span></div>
