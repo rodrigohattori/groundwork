@@ -52,7 +52,12 @@ function About() {
             </ol>
         </Section>
         <Section title="Limits, on purpose">
-            <p className="body-text">No live LLM calls, no accounts, no server, no integrations. Those are next steps, in order: a live synthesis provider behind the existing interface, server-side persistence with auth, then feedback-source connectors. The repository is private while the demo is under review.</p>
+            <p className="body-text">No live LLM calls, no accounts, no server, no integrations. Those are next steps, in order: a live synthesis provider behind the existing interface, server-side persistence with auth, then feedback-source connectors.</p>
+            <p className="body-text">Source: <a href="https://github.com/rodrigohattori/groundwork">github.com/rodrigohattori/groundwork</a>.</p>
+        </Section>
+        <Section title="R2: a real, failed model experiment">
+            <p className="body-text">R1 is simulated by design. R2 asked a real question: what would a small local model actually produce from this same 73-item base? Four attempts were run with small local instruct models (Qwen2.5 0.5B and 1.5B, GGUF, via node-llama-cpp): a plain JSON-only prompt, a stricter JSON-forcing prompt, the larger model, and a few-shot format example.</p>
+            <p className="body-text">These 4 attempts, with these models, prompts and resources, did not produce valid structured output: markdown prose instead of JSON, the feedback index echoed back instead of synthesized themes, an invalid schema, and a truncated run. The exact prompts, the raw model outputs (unmodified, including the failures) and the per-attempt parameters are published in <a href="https://github.com/rodrigohattori/groundwork/tree/main/experiments/r2">experiments/r2</a> in the repository. A live provider behind the existing interface remains the path to a real run.</p>
         </Section>
     </>;
 }
@@ -86,4 +91,4 @@ export function App() {
             </Routes>
         </main>
     </div>;
-                }
+}
