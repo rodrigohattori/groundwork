@@ -1,0 +1,37 @@
+{
+  "runId": "R2",
+  "attempt": 2,
+  "kind": "real local-model execution (not simulated)",
+  "generatedAt": "2026-11-01T14:47:54.437Z",
+  "engine": {
+    "runtime": "node-llama-cpp",
+    "llamaBackend": "prebuilt npm binary"
+  },
+  "model": {
+    "file": "model-05b.gguf",
+    "source": "https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF",
+    "sha256": "6eb923e7d26e9cea28811e1a8e852009b21242fb157b26149d3b188f3a8c8653",
+    "quantization": "Q4_K_M"
+  },
+  "prompt": {
+    "sha256": "4380ea2359dc97cc643319ec0ad0e0d225838b64963782f632ef41cba5797633",
+    "file": "r2-attempt2-prompt.txt"
+  },
+  "params": {
+    "temperature": 0.2,
+    "seed": 1234,
+    "maxTokens": 900,
+    "contextSize": 8192
+  },
+  "timing": {
+    "modelLoadMs": 1271,
+    "inferenceMs": 109018,
+    "totalMs": 110289
+  },
+  "output": {
+    "themeCount": 0,
+    "parseError": "no JSON array found in output",
+    "uncitedThemes": 0
+  },
+  "rawCompletionFile": "r2-attempt2-raw-completion.txt"
+}
